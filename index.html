@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Glarimy Quiz</title>
+    <style>
+        table {
+                width: 100%;
+            }
+            table td:nth-child(odd){
+                text-align: left;
+            }
+            table td:nth-child(even){
+                text-align: right;
+            }
+        </style>
+</head>
+
+<body>
+    <form>
+        <h1>Glarimy Quiz</h1>
+        <table border='1'>
+            <tr>
+                <td>Date: <span id='date'></span></td>
+                <td>Subject: <span id='subject'></span></td>
+            </tr>
+            <tr>
+                <td>Duration: <span id='duration'></span> Minutes</td>
+                <td>Maximum Marks: <span id='max'></span></td>
+            </tr>
+            <tr>
+                <td>Name <input type='text' name='studentname' /></td>
+                <td>Marks Awared: <span id='marks'></span></td>
+            </tr>
+        </table>
+        <ul>Notes
+            <li>Answer all the questions</li>
+            <li>Each question carries 1 mark</li>
+            <li>Each question has only one right answer</li>
+        </ul>
+        <hr />
+
+        <ol id='list'>
+        </ol>
+        <hr />
+        <input type='submit' value='Evaluate' />
+    </form>
+</body>
+<script type='text/javascript'>
+    let xhr = new XMLHttpRequest();
+    xhr.open("get", "data.json", true);
+    xhr.onreadystatechange = function(){
+        if(xhr.status == 200 && xhr.readyState == 4){
+            let data = JSON.parse(xhr.responseText);
+            document.getElementById('date').innerHTML = new Date();
+            document.getElementById('subject').innerHTML = data.subject;
+            document.getElementById('duration').innerHTML = data.duration;
+            document.getElementById('max').innerHTML = data.max;
+            for(let index=0; index < data.questions.length; index++){
+                let item = `<li>
+                    <div>${data.questions[index].title}</div>
+                    <div class='options'>
+                        <div><input type='radio' name=${data.questions[index].qid} value='a'/><span>${data.questions[index].oa}</span></div>
+                        <div><input type='radio' name=${data.questions[index].qid} value='b'/><span>${data.questions[index].ob}</span></div>
+                        <div><input type='radio' name=${data.questions[index].qid} value='c'/><span>${data.questions[index].oc}</span></div>
+                    </div>
+                </li>`;
+                document.getElementById('list').innerHTML += item;               
+            }
+        }
+    }
+    xhr.send();
+</script>
+</html>
